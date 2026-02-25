@@ -1,14 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Award, X } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-
-interface Certificate {
-  id: string;
-  title: string;
-  image_url: string;
-  issued_date: string | null;
-  issuer: string | null;
-}
+import { useEffect, useState } from "react";
+import { Award, X } from "lucide-react";
+import { certificates as CERTS, Certificate } from "../data/certificates";
 
 const Certificates = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -16,45 +8,40 @@ const Certificates = () => {
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
 
   useEffect(() => {
-    fetchCertificates();
+    setCertificates(CERTS);
+    setLoading(false);
+
+    // cleanup in case user leaves page while modal is open
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, []);
 
-  const fetchCertificates = async () => {
-    const { data, error } = await supabase
-      .from('certificates')
-      .select('*')
-      .order('display_order', { ascending: true });
-
-    if (error) {
-      console.error('Error fetching certificates:', error);
-    } else {
-      setCertificates(data || []);
-    }
-    setLoading(false);
-  };
-
-  const formatDate = (dateString: string | null) => {
+  const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return null;
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return null;
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
     });
   };
 
   const openCertificate = (certificate: Certificate) => {
     setSelectedCertificate(certificate);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const closeCertificate = () => {
     setSelectedCertificate(null);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-[#00F0FF] border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-12 h-12 border-4 border-[#00F0FF] border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -74,14 +61,12 @@ const Certificates = () => {
               Certifications and achievements that validate my expertise across
               various domains.
             </p>
-            <div className="w-20 h-1 bg-[#00F0FF] mx-auto"></div>
+            <div className="w-20 h-1 bg-[#00F0FF] mx-auto" />
           </div>
 
           {certificates.length === 0 ? (
             <div className="text-center py-16">
-              <p className="text-gray-400 text-lg">
-                Certificates coming soon. Stay tuned!
-              </p>
+              <p className="text-gray-400 text-lg">Certificates coming soon. Stay tuned!</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -95,9 +80,14 @@ const Certificates = () => {
                     <img
                       src={certificate.image_url}
                       alt={certificate.title}
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      onError={(e) => {
+                        // hide broken image instead of showing an ugly icon
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
-                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors"></div>
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
                   </div>
 
                   <div className="p-6 space-y-2">
@@ -107,14 +97,13 @@ const Certificates = () => {
 
                     {certificate.issuer && (
                       <p className="text-sm text-white">
-                        Issued by: <span className="text-white font-medium">{certificate.issuer}</span>
+                        Issued by:{" "}
+                        <span className="text-white font-medium">{certificate.issuer}</span>
                       </p>
                     )}
 
                     {certificate.issued_date && (
-                      <p className="text-sm text-white">
-                        {formatDate(certificate.issued_date)}
-                      </p>
+                      <p className="text-sm text-white">{formatDate(certificate.issued_date)}</p>
                     )}
                   </div>
                 </div>
@@ -137,28 +126,24 @@ const Certificates = () => {
             <X size={32} />
           </button>
 
-          <div
-            className="relative max-w-5xl w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
             <img
               src={selectedCertificate.image_url}
               alt={selectedCertificate.title}
               className="w-full h-auto max-h-[85vh] object-contain rounded-lg shadow-2xl"
             />
             <div className="mt-6 text-center space-y-2">
-              <h3 className="text-2xl font-bold text-white">
-                {selectedCertificate.title}
-              </h3>
+              <h3 className="text-2xl font-bold text-white">{selectedCertificate.title}</h3>
+
               {selectedCertificate.issuer && (
                 <p className="text-white">
-                  Issued by: <span className="text-[#00F0FF]">{selectedCertificate.issuer}</span>
+                  Issued by:{" "}
+                  <span className="text-[#00F0FF]">{selectedCertificate.issuer}</span>
                 </p>
               )}
+
               {selectedCertificate.issued_date && (
-                <p className="text-white">
-                  {formatDate(selectedCertificate.issued_date)}
-                </p>
+                <p className="text-white">{formatDate(selectedCertificate.issued_date)}</p>
               )}
             </div>
           </div>

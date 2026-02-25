@@ -17,7 +17,7 @@ export const projects: Project[] = [
     tech_stack: ["React", "TypeScript", "Tailwind"],
     live_url: "https://fundifix.vercel.app/",
     repo_url: "https://github.com/Kallendev/fundifix",
-    image_url: "/projects/fundifix.png",
+    image_url: "https://res.cloudinary.com/drfdoiwg1/image/upload/v1772014217/fundifix_image_dwbjbk.jpg",
     featured: true,
   },
   {
@@ -27,7 +27,7 @@ export const projects: Project[] = [
     tech_stack: ["React", "Tailwind", "Figma"],
     live_url: null,
     repo_url: null,
-    image_url: "/projects/jibuks.png",
+    image_url: "https://res.cloudinary.com/drfdoiwg1/image/upload/v1763530679/samples/cup-on-a-table.jpg",
     featured: false,
   },
 ];

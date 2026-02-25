@@ -1,83 +1,78 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Calendar, Heart, ArrowLeft } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import { supabase } from '../lib/supabase';
-import Comments from '../components/Comments';
+import { useEffect, useMemo, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Calendar, Heart, ArrowLeft } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import Comments from "../components/Comments";
+import { blogPosts, BlogPost as BlogPostType } from "../data/blogPosts";
 
-interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  content: string;
-  image_url: string;
-  published_date: string;
-  likes_count: number;
-}
+const LIKED_KEY = "likedPosts"; // string[] of slugs
+const LIKE_COUNTS_KEY = "blogLikeCounts"; // { [slug]: number }
 
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<BlogPost | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
 
-  useEffect(() => {
-    if (slug) {
-      fetchPost();
-      checkIfLiked();
-    }
+  const post = useMemo<BlogPostType | null>(() => {
+    if (!slug) return null;
+    return blogPosts.find((p) => p.slug === slug) || null;
   }, [slug]);
 
-  const fetchPost = async () => {
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('slug', slug)
-      .maybeSingle();
+  useEffect(() => {
+    setLoading(true);
 
-    if (error) {
-      console.error('Error fetching blog post:', error);
-    } else {
-      setPost(data);
+    if (!slug || !post) {
+      setLoading(false);
+      return;
     }
-    setLoading(false);
-  };
 
-  const checkIfLiked = () => {
-    const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
+    const likedPosts: string[] = JSON.parse(localStorage.getItem(LIKED_KEY) || "[]");
     setLiked(likedPosts.includes(slug));
-  };
 
-  const handleLike = async () => {
-    if (!post || liked) return;
+    const counts: Record<string, number> = JSON.parse(
+      localStorage.getItem(LIKE_COUNTS_KEY) || "{}"
+    );
+    setLikesCount(typeof counts[slug] === "number" ? counts[slug] : 0);
 
-    const { error } = await supabase
-      .from('blog_posts')
-      .update({ likes_count: post.likes_count + 1 })
-      .eq('id', post.id);
+    setLoading(false);
+  }, [slug, post]);
 
-    if (!error) {
-      setPost({ ...post, likes_count: post.likes_count + 1 });
-      setLiked(true);
+  const handleLike = () => {
+    if (!slug || !post || liked) return;
 
-      const likedPosts = JSON.parse(localStorage.getItem('likedPosts') || '[]');
-      likedPosts.push(slug);
-      localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-    }
+    // instant UI update
+    setLiked(true);
+    setLikesCount((prev) => prev + 1);
+
+    // persist liked slugs
+    const likedPosts: string[] = JSON.parse(localStorage.getItem(LIKED_KEY) || "[]");
+    if (!likedPosts.includes(slug)) likedPosts.push(slug);
+    localStorage.setItem(LIKED_KEY, JSON.stringify(likedPosts));
+
+    // persist counts
+    const counts: Record<string, number> = JSON.parse(
+      localStorage.getItem(LIKE_COUNTS_KEY) || "{}"
+    );
+    counts[slug] = (typeof counts[slug] === "number" ? counts[slug] : 0) + 1;
+    localStorage.setItem(LIKE_COUNTS_KEY, JSON.stringify(counts));
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return dateString;
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-[#00F0FF] border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-12 h-12 border-4 border-[#00F0FF] border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -110,114 +105,160 @@ const BlogPost = () => {
             Back to Blog
           </Link>
 
-          <div className="space-y-6">
-            <div className="relative h-64 md:h-96 rounded-xl overflow-hidden">
+          <div className="space-y-8">
+            {/* Cover */}
+            <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden border border-gray-800">
               <img
                 src={post.image_url}
                 alt={post.title}
                 className="w-full h-full object-cover"
+                loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             </div>
 
+            {/* Title + Meta */}
             <div className="space-y-4">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
                 {post.title}
               </h1>
 
-              <div className="flex items-center gap-6 text-gray-400">
-                <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-3 text-gray-400">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-800 bg-gray-900/40">
                   <Calendar size={18} />
-                  {formatDate(post.published_date)}
+                  <span className="text-sm">{formatDate(post.published_date)}</span>
                 </div>
 
                 <button
                   onClick={handleLike}
                   disabled={liked}
-                  className={`flex items-center gap-2 transition-colors ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${
                     liked
-                      ? 'text-[#FF3366] cursor-not-allowed'
-                      : 'hover:text-[#FF3366] cursor-pointer'
+                      ? "border-[#FF3366]/50 bg-[#FF3366]/10 text-[#FF3366] cursor-not-allowed"
+                      : "border-gray-800 bg-gray-900/40 hover:border-[#FF3366]/60 hover:text-[#FF3366]"
                   }`}
+                  aria-label="Like this post"
                 >
-                  <Heart size={18} className={liked ? 'fill-current' : ''} />
-                  {post.likes_count}
+                  <Heart size={18} className={liked ? "fill-current" : ""} />
+                  <span className="text-sm font-semibold">{likesCount}</span>
+                  {liked && <span className="text-xs opacity-80">Liked</span>}
                 </button>
               </div>
             </div>
 
-            <div className="w-full h-px bg-gray-800"></div>
+            <div className="w-full h-px bg-gray-800" />
 
-            <div className="prose prose-invert prose-lg max-w-none">
+            {/* Content */}
+            <div
+              className="
+                prose prose-invert max-w-none
+
+                prose-p:text-white/90 prose-p:text-[18px] prose-p:leading-8
+                prose-headings:text-white
+                prose-h1:text-[#00F0FF]
+                prose-h2:text-white
+                prose-h3:text-[#00F0FF]
+
+                prose-strong:text-white
+                prose-em:text-white/90
+
+                prose-a:text-[#00F0FF] hover:prose-a:text-[#00D4E6]
+
+                prose-li:text-white/85
+                prose-hr:border-gray-800
+
+                prose-blockquote:border-l-[#00F0FF]
+                prose-blockquote:text-white/70
+
+                prose-code:text-[#00F0FF]
+              "
+            >
               <ReactMarkdown
                 components={{
+                  // cleaner paragraph rhythm
+                  p: ({ children }) => (
+                    <p className="mb-6 first:text-white first:text-xl first:leading-9">
+                      {children}
+                    </p>
+                  ),
+
+                  // headings spacing
                   h1: ({ children }) => (
-                    <h1 className="text-3xl font-bold text-white mt-8 mb-4">
+                    <h1 className="mt-12 mb-4 text-4xl font-extrabold text-[#00F0FF] tracking-tight">
                       {children}
                     </h1>
                   ),
                   h2: ({ children }) => (
-                    <h2 className="text-2xl font-bold text-white mt-6 mb-3">
+                    <h2 className="mt-12 mb-3 text-2xl font-bold text-white tracking-tight">
                       {children}
                     </h2>
                   ),
                   h3: ({ children }) => (
-                    <h3 className="text-xl font-bold text-white mt-4 mb-2">
+                    <h3 className="mt-8 mb-2 text-xl font-bold text-[#00F0FF] tracking-tight">
                       {children}
                     </h3>
                   ),
-                  p: ({ children }) => (
-                    <p className="text-white leading-relaxed mb-4 text-lg">
+
+                  // nicer quote
+                  blockquote: ({ children }) => (
+                    <blockquote className="my-8 border-l-4 border-[#00F0FF] pl-5 italic text-white/70">
                       {children}
-                    </p>
+                    </blockquote>
                   ),
+
+                  // clean lists
+                  ul: ({ children }) => (
+                    <ul className="my-6 list-disc pl-6 space-y-2 text-white/85">
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({ children }) => (
+                    <ol className="my-6 list-decimal pl-6 space-y-2 text-white/85">
+                      {children}
+                    </ol>
+                  ),
+
+                  // links
                   a: ({ href, children }) => (
                     <a
                       href={href}
-                      className="text-[#00F0FF] hover:text-[#00D4E6] underline"
+                      className="text-[#00F0FF] hover:text-[#00D4E6] underline underline-offset-4"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       {children}
                     </a>
                   ),
-                  ul: ({ children }) => (
-                    <ul className="list-disc list-inside text-gray-300 mb-4 space-y-2">
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className="list-decimal list-inside text-gray-300 mb-4 space-y-2">
-                      {children}
-                    </ol>
-                  ),
-                  blockquote: ({ children }) => (
-                    <blockquote className="border-l-4 border-[#00F0FF] pl-4 italic text-gray-400 my-4">
-                      {children}
-                    </blockquote>
-                  ),
+
+                  // inline code
                   code: ({ children }) => (
-                    <code className="bg-gray-800 text-[#00F0FF] px-2 py-1 rounded text-sm">
+                    <code className="bg-gray-900/70 border border-gray-800 px-2 py-1 rounded text-sm text-[#00F0FF]">
                       {children}
                     </code>
                   ),
+
+                  // code blocks
                   pre: ({ children }) => (
-                    <pre className="bg-gray-900 border border-gray-800 p-4 rounded-lg overflow-x-auto mb-4">
+                    <pre className="bg-gray-900 border border-gray-800 p-4 rounded-xl overflow-x-auto my-6">
                       {children}
                     </pre>
                   ),
+
+                  // horizontal rule
+                  hr: () => <div className="my-10 h-px w-full bg-gray-800" />,
                 }}
               >
                 {post.content}
               </ReactMarkdown>
             </div>
 
-            <div className="w-full h-px bg-gray-800 my-8"></div>
+            <div className="w-full h-px bg-gray-800 my-2" />
 
-            <div className="bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800 p-6">
-              <h3 className="text-xl font-bold text-white mb-4">Comments</h3>
+            {/* Comments */}
+            <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl border border-gray-800 p-6">
+              <h3 className="text-xl font-bold text-white mb-2">Comments</h3>
               <p className="text-sm text-gray-400 mb-4">
-                Sign in with GitHub to leave a comment. Powered by{' '}
+                Sign in with GitHub to leave a comment. Powered by{" "}
                 <a
                   href="https://utteranc.es/"
                   target="_blank"
