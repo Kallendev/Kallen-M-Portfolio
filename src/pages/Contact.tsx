@@ -36,17 +36,44 @@ const Contact = () => {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-        body: JSON.stringify({
+       body: JSON.stringify({
         name: formData.name,
         email: formData.email,
         subject: formData.subject,
         projectType: formData.projectType,
         budget: formData.budget,
-        message: formData.message,
 
-        _subject: `New Inquiry from ${formData.name} — Portfolio`,
+        message: `
+      ---------------------------------
+      📩 NEW PORTFOLIO MESSAGE
+      ---------------------------------
+
+      👤 Name:
+      ${formData.name}
+
+      📧 Email:
+      ${formData.email}
+
+      🧾 Subject:
+      ${formData.subject}
+
+      💼 Project Type:
+      ${formData.projectType}
+
+      💰 Budget:
+      ${formData.budget}
+
+      💬 Message:
+      ${formData.message}
+
+      ---------------------------------
+      Sent from kallen-m-portfolio.vercel.app
+      ---------------------------------
+        `,
+
+        _subject: `New Portfolio Inquiry from ${formData.name}`,
         _replyto: formData.email
-      }),
+      })
       });
 
       const data = await response.json();
