@@ -1,31 +1,78 @@
 import { useState } from 'react';
-import { Mail, Phone, Send, Download, CheckCircle } from 'lucide-react';
+import { Mail, Phone, Send, Download, CheckCircle, AlertCircle } from 'lucide-react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: '',
+    projectType: '',
+    budget: '',
     message: '',
   });
+
   const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setFormData({ name: '', email: '', message: '' });
-
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 5000);
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('https://formspree.io/f/mlgpedwl', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          projectType: formData.projectType,
+          budget: formData.budget,
+          message: formData.message,
+
+          // helpful extras for cleaner email handling
+          _subject: `New Portfolio Contact — ${formData.subject || 'Website Inquiry'}`,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          projectType: '',
+          budget: '',
+          message: '',
+        });
+
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 5000);
+      } else {
+        setError(data?.errors?.[0]?.message || 'Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      setError('Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -37,7 +84,7 @@ const Contact = () => {
               Get In Touch
             </h1>
             <p className="text-lg text-white max-w-2xl mx-auto">
-              Have a project in mind or just want to say hello? I'd love to hear
+              Have a project in mind or just want to say hello? I&apos;d love to hear
               from you.
             </p>
             <div className="w-20 h-1 bg-[#00F0FF] mx-auto"></div>
@@ -112,11 +159,18 @@ const Contact = () => {
                     Message Sent!
                   </h3>
                   <p className="text-white">
-                    I'll get back to you as soon as possible.
+                    Thanks for reaching out. I&apos;ll get back to you soon.
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {error && (
+                    <div className="flex items-start gap-3 p-4 rounded-lg border border-red-500/30 bg-red-900/20">
+                      <AlertCircle className="text-red-400 mt-0.5" size={20} />
+                      <p className="text-red-200 text-sm">{error}</p>
+                    </div>
+                  )}
+
                   <div>
                     <label
                       htmlFor="name"
@@ -157,6 +211,73 @@ const Contact = () => {
 
                   <div>
                     <label
+                      htmlFor="subject"
+                      className="block text-sm font-medium text-white mb-2"
+                    >
+                      Subject
+                    </label>
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all"
+                      placeholder="Project inquiry"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label
+                        htmlFor="projectType"
+                        className="block text-sm font-medium text-white mb-2"
+                      >
+                        Project Type
+                      </label>
+                      <select
+                        id="projectType"
+                        name="projectType"
+                        value={formData.projectType}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all"
+                      >
+                        <option value="">Select type</option>
+                        <option value="Website Design">Website Design</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="UI/UX Design">UI/UX Design</option>
+                        <option value="Branding">Branding</option>
+                        <option value="Graphic Design">Graphic Design</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="budget"
+                        className="block text-sm font-medium text-white mb-2"
+                      >
+                        Budget
+                      </label>
+                      <select
+                        id="budget"
+                        name="budget"
+                        value={formData.budget}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all"
+                      >
+                        <option value="">Select budget</option>
+                        <option value="Under $100">Under $100</option>
+                        <option value="$100 - $300">$100 - $300</option>
+                        <option value="$300 - $700">$300 - $700</option>
+                        <option value="$700+">$700+</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
                       htmlFor="message"
                       className="block text-sm font-medium text-white mb-2"
                     >
@@ -170,16 +291,17 @@ const Contact = () => {
                       required
                       rows={6}
                       className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all resize-none"
-                      placeholder="Your message..."
+                      placeholder="Tell me about your project, goals, and timeline..."
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#FF3366] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#FF3366]/50"
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#FF3366] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#FF3366]/50 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     <Send size={20} />
-                    Send Message
+                    {loading ? 'Sending...' : 'Send Message'}
                   </button>
                 </form>
               )}
