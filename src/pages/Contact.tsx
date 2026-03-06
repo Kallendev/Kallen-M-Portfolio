@@ -37,16 +37,16 @@ const Contact = () => {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          projectType: formData.projectType,
-          budget: formData.budget,
-          message: formData.message,
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        projectType: formData.projectType,
+        budget: formData.budget,
+        message: formData.message,
 
-          // helpful extras for cleaner email handling
-          _subject: `New Portfolio Contact — ${formData.subject || 'Website Inquiry'}`,
-        }),
+        _subject: `New Inquiry from ${formData.name} — Portfolio`,
+        _replyto: formData.email
+      }),
       });
 
       const data = await response.json();
