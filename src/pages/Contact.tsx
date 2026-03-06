@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Mail, Phone, Send, Download, CheckCircle, AlertCircle } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  Send,
+  Download,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -18,10 +25,10 @@ const Contact = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,44 +43,42 @@ const Contact = () => {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-       body: JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        projectType: formData.projectType,
-        budget: formData.budget,
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          projectType: formData.projectType,
+          budget: formData.budget,
+          message: `
+━━━━━━━━━━━━━━━━━━━━━━
+NEW PORTFOLIO INQUIRY
+━━━━━━━━━━━━━━━━━━━━━━
 
-        message: `
-      ---------------------------------
-      📩 NEW PORTFOLIO MESSAGE
-      ---------------------------------
+Name:
+${formData.name}
 
-      👤 Name:
-      ${formData.name}
+Email:
+${formData.email}
 
-      📧 Email:
-      ${formData.email}
+Subject:
+${formData.subject}
 
-      🧾 Subject:
-      ${formData.subject}
+Project Type:
+${formData.projectType || 'Not specified'}
 
-      💼 Project Type:
-      ${formData.projectType}
+Budget:
+${formData.budget || 'Not specified'}
 
-      💰 Budget:
-      ${formData.budget}
+Message:
+${formData.message}
 
-      💬 Message:
-      ${formData.message}
-
-      ---------------------------------
-      Sent from kallen-m-portfolio.vercel.app
-      ---------------------------------
-        `,
-
-        _subject: `New Portfolio Inquiry from ${formData.name}`,
-        _replyto: formData.email
-      })
+━━━━━━━━━━━━━━━━━━━━━━
+Sent from kallen-m-portfolio.vercel.app
+━━━━━━━━━━━━━━━━━━━━━━
+          `,
+          _subject: `New Portfolio Inquiry — ${formData.name}`,
+          _replyto: formData.email,
+        }),
       });
 
       const data = await response.json();
@@ -93,9 +98,11 @@ const Contact = () => {
           setSubmitted(false);
         }, 5000);
       } else {
-        setError(data?.errors?.[0]?.message || 'Something went wrong. Please try again.');
+        setError(
+          data?.errors?.[0]?.message || 'Something went wrong. Please try again.'
+        );
       }
-    } catch (err) {
+    } catch {
       setError('Failed to send message. Please try again.');
     } finally {
       setLoading(false);
@@ -110,7 +117,7 @@ const Contact = () => {
             <h1 className="text-4xl md:text-5xl font-bold text-white">
               Get In Touch
             </h1>
-            <p className="text-lg text-white max-w-2xl mx-auto">
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               Have a project in mind or just want to say hello? I&apos;d love to hear
               from you.
             </p>
@@ -159,7 +166,7 @@ const Contact = () => {
                 <h3 className="text-xl font-bold text-white mb-4">
                   Download My CV
                 </h3>
-                <p className="text-white mb-4">
+                <p className="text-gray-300 mb-4">
                   Want to know more about my experience and qualifications? Download
                   my curriculum vitae.
                 </p>
@@ -185,7 +192,7 @@ const Contact = () => {
                   <h3 className="text-xl font-bold text-white mb-2">
                     Message Sent!
                   </h3>
-                  <p className="text-white">
+                  <p className="text-gray-300">
                     Thanks for reaching out. I&apos;ll get back to you soon.
                   </p>
                 </div>
