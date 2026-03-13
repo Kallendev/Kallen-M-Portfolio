@@ -22,6 +22,13 @@ const Contact = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const budgetSuggestions = [
+    'Under $100',
+    '$100 - $300',
+    '$300 - $700',
+    '$700+',
+  ];
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -31,24 +38,34 @@ const Contact = () => {
     }));
   };
 
+  const handleBudgetSuggestion = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      budget: value,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      const response = await fetch('https://formspree.io/f/mlgpedwl', {
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
         body: JSON.stringify({
+          access_key: 'f79cacdc-15d8-4830-a0a3-45f0ec23584e',
+          subject: `New Portfolio Inquiry — ${formData.name}`,
+          from_name: 'Kallen Portfolio Website',
+          replyto: formData.email,
           name: formData.name,
           email: formData.email,
-          subject: formData.subject,
-          projectType: formData.projectType,
-          budget: formData.budget,
+          projectType: formData.projectType || 'Not specified',
+          budget: formData.budget || 'Not specified',
           message: `
 ━━━━━━━━━━━━━━━━━━━━━━
 NEW PORTFOLIO INQUIRY
@@ -76,14 +93,13 @@ ${formData.message}
 Sent from kallen-m-portfolio.vercel.app
 ━━━━━━━━━━━━━━━━━━━━━━
           `,
-          _subject: `New Portfolio Inquiry — ${formData.name}`,
-          _replyto: formData.email,
+          botcheck: '',
         }),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (data.success) {
         setSubmitted(true);
         setFormData({
           name: '',
@@ -98,9 +114,7 @@ Sent from kallen-m-portfolio.vercel.app
           setSubmitted(false);
         }, 5000);
       } else {
-        setError(
-          data?.errors?.[0]?.message || 'Something went wrong. Please try again.'
-        );
+        setError(data.message || 'Something went wrong. Please try again.');
       }
     } catch {
       setError('Failed to send message. Please try again.');
@@ -198,6 +212,15 @@ Sent from kallen-m-portfolio.vercel.app
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  <input
+                    type="checkbox"
+                    name="botcheck"
+                    className="hidden"
+                    style={{ display: 'none' }}
+                    tabIndex={-1}
+                    autoComplete="off"
+                  />
+
                   {error && (
                     <div className="flex items-start gap-3 p-4 rounded-lg border border-red-500/30 bg-red-900/20">
                       <AlertCircle className="text-red-400 mt-0.5" size={20} />
@@ -262,51 +285,62 @@ Sent from kallen-m-portfolio.vercel.app
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="projectType"
-                        className="block text-sm font-medium text-white mb-2"
-                      >
-                        Project Type
-                      </label>
-                      <select
-                        id="projectType"
-                        name="projectType"
-                        value={formData.projectType}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all"
-                      >
-                        <option value="">Select type</option>
-                        <option value="Website Design">Website Design</option>
-                        <option value="Web Development">Web Development</option>
-                        <option value="UI/UX Design">UI/UX Design</option>
-                        <option value="Branding">Branding</option>
-                        <option value="Graphic Design">Graphic Design</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
+                  <div>
+                    <label
+                      htmlFor="projectType"
+                      className="block text-sm font-medium text-white mb-2"
+                    >
+                      Project Type
+                    </label>
+                    <select
+                      id="projectType"
+                      name="projectType"
+                      value={formData.projectType}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all"
+                    >
+                      <option value="">Select type</option>
+                      <option value="Website Design">Website Design</option>
+                      <option value="Web Development">Web Development</option>
+                      <option value="UI/UX Design">UI/UX Design</option>
+                      <option value="Branding">Branding</option>
+                      <option value="Graphic Design">Graphic Design</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
 
-                    <div>
-                      <label
-                        htmlFor="budget"
-                        className="block text-sm font-medium text-white mb-2"
-                      >
-                        Budget
-                      </label>
-                      <select
-                        id="budget"
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all"
-                      >
-                        <option value="">Select budget</option>
-                        <option value="Under $100">Under $100</option>
-                        <option value="$100 - $300">$100 - $300</option>
-                        <option value="$300 - $700">$300 - $700</option>
-                        <option value="$700+">$700+</option>
-                      </select>
+                  <div>
+                    <label
+                      htmlFor="budget"
+                      className="block text-sm font-medium text-white mb-2"
+                    >
+                      Budget
+                    </label>
+                    <input
+                      type="text"
+                      id="budget"
+                      name="budget"
+                      value={formData.budget}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all"
+                      placeholder="Enter budget or choose a quick range below"
+                    />
+
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {budgetSuggestions.map((item) => (
+                        <button
+                          key={item}
+                          type="button"
+                          onClick={() => handleBudgetSuggestion(item)}
+                          className={`px-3 py-2 text-sm rounded-full border transition-all ${
+                            formData.budget === item
+                              ? 'bg-[#00F0FF] text-black border-[#00F0FF]'
+                              : 'bg-gray-900 text-gray-300 border-gray-700 hover:border-[#00F0FF] hover:text-white'
+                          }`}
+                        >
+                          {item}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
