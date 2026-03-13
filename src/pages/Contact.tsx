@@ -4,8 +4,9 @@ import {
   Phone,
   Send,
   Download,
-  CheckCircle,
+  CheckCircle2,
   AlertCircle,
+  Sparkles,
 } from 'lucide-react';
 
 const Contact = () => {
@@ -59,40 +60,17 @@ const Contact = () => {
         },
         body: JSON.stringify({
           access_key: 'f79cacdc-15d8-4830-a0a3-45f0ec23584e',
-          subject: `New Portfolio Inquiry — ${formData.name}`,
-          from_name: 'Kallen Portfolio Website',
+          from_name: 'KALLEN MUGAMBI STUDIO',
+          subject: `NEW CLIENT INQUIRY — ${formData.name}`,
           replyto: formData.email,
+
           name: formData.name,
           email: formData.email,
+          subject_line: formData.subject || 'Not specified',
           projectType: formData.projectType || 'Not specified',
           budget: formData.budget || 'Not specified',
-          message: `
-━━━━━━━━━━━━━━━━━━━━━━
-NEW PORTFOLIO INQUIRY
-━━━━━━━━━━━━━━━━━━━━━━
+          message: formData.message,
 
-Name:
-${formData.name}
-
-Email:
-${formData.email}
-
-Subject:
-${formData.subject}
-
-Project Type:
-${formData.projectType || 'Not specified'}
-
-Budget:
-${formData.budget || 'Not specified'}
-
-Message:
-${formData.message}
-
-━━━━━━━━━━━━━━━━━━━━━━
-Sent from kallen-m-portfolio.vercel.app
-━━━━━━━━━━━━━━━━━━━━━━
-          `,
           botcheck: '',
         }),
       });
@@ -201,13 +179,28 @@ Sent from kallen-m-portfolio.vercel.app
               </h2>
 
               {submitted ? (
-                <div className="p-8 bg-gradient-to-br from-green-900/20 to-black rounded-xl border border-green-500/30 text-center">
-                  <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-white mb-2">
-                    Message Sent!
+                <div className="relative overflow-hidden rounded-2xl border border-[#00F0FF]/30 bg-gradient-to-br from-[#00F0FF]/12 via-[#0a0a0a] to-[#FF3366]/12 p-8 text-center shadow-[0_0_40px_rgba(0,240,255,0.08)]">
+                  <div className="absolute -top-10 -right-10 h-28 w-28 rounded-full bg-[#00F0FF]/10 blur-3xl" />
+                  <div className="absolute -bottom-10 -left-10 h-28 w-28 rounded-full bg-[#FF3366]/10 blur-3xl" />
+
+                  <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-green-400/30 bg-green-500/10">
+                    <CheckCircle2 size={34} className="text-green-400" />
+                  </div>
+
+                  <div className="mb-3 flex items-center justify-center gap-2">
+                    <Sparkles size={16} className="text-[#00F0FF]" />
+                    <p className="text-xs font-semibold tracking-[0.25em] text-[#00F0FF] uppercase">
+                      Message Delivered
+                    </p>
+                  </div>
+
+                  <h3 className="text-2xl font-bold text-white mb-3">
+                    Thank you for reaching out
                   </h3>
-                  <p className="text-gray-300">
-                    Thanks for reaching out. I&apos;ll get back to you soon.
+
+                  <p className="text-gray-300 max-w-md mx-auto leading-7">
+                    Your message has been sent successfully. I&apos;ll review it and get
+                    back to you as soon as possible.
                   </p>
                 </div>
               ) : (
@@ -323,7 +316,7 @@ Sent from kallen-m-portfolio.vercel.app
                       value={formData.budget}
                       onChange={handleChange}
                       className="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#00F0FF] focus:ring-2 focus:ring-[#00F0FF]/20 transition-all"
-                      placeholder="Enter budget or choose a quick range below"
+                      placeholder="Enter amount or budget range"
                     />
 
                     <div className="flex flex-wrap gap-2 mt-3">
