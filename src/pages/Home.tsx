@@ -49,7 +49,7 @@ const Home = () => {
               <div className="absolute inset-0 bg-[#00F0FF] rounded-full blur-3xl opacity-20 animate-pulse"></div>
               <div className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full overflow-hidden border-4 border-[#00F0FF] shadow-2xl shadow-[#00F0FF]/50">
                 <img
-                  src="https://res.cloudinary.com/drfdoiwg1/image/upload/v1763720889/kallenpassport_i03uan.jpg"
+                  src="https://res.cloudinary.com/drfdoiwg1/image/upload/v1783415830/karen_ftyosp.jpg"
                   alt="Kallen Mugambi - Professional Portrait"
                   className="w-full h-full object-cover"
                 />
