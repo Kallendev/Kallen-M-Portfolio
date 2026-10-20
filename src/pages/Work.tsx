@@ -22,7 +22,7 @@ const Work = () => {
 
   return (
     <div className="min-h-screen bg-black">
-      <section className="container mx-auto px-4 lg:px-8 py-20 md:py-32">
+      <section className="container mx-auto px-4 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-24">
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="space-y-4 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white">My Work</h1>
@@ -58,7 +58,7 @@ const Work = () => {
 
                       {project.featured && (
                         <div className="absolute top-4 right-4 z-20">
-                          <div className="px-3 py-1 bg-[#FF3366]/90 backdrop-blur-md text-white text-xs font-semibold rounded-full border border-[#FF3366] flex items-center gap-1 shadow-lg">
+                          <div className="px-3 py-1 bg-[#1a4d57]/90 backdrop-blur-md text-white text-xs font-semibold rounded-full border border-[#1a4d57] flex items-center gap-1 shadow-lg">
                             <Sparkles size={12} />
                             Featured
                           </div>
@@ -95,7 +95,7 @@ const Work = () => {
                           href={project.live_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 group/btn relative overflow-hidden flex items-center justify-center gap-2 px-5 py-3 bg-[#00F0FF] text-black text-sm font-bold rounded-xl hover:bg-[#FF3366] transition-all duration-300 shadow-lg shadow-[#00F0FF]/25 hover:shadow-xl hover:shadow-[#FF3366]/40"
+                          className="flex-1 group/btn relative overflow-hidden flex items-center justify-center gap-2 px-5 py-3 bg-[#00F0FF] text-black text-sm font-bold rounded-xl hover:bg-[#1a4d57] transition-all duration-300 shadow-lg shadow-[#00F0FF]/25 hover:shadow-xl hover:shadow-[#1a4d57]/40"
                         >
                           <ExternalLink size={18} className="relative z-10" />
                           <span className="relative z-10">View Live</span>

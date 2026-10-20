@@ -4,7 +4,7 @@ import { Sparkles } from 'lucide-react';
 const About = () => {
   return (
     <div className="min-h-screen bg-black">
-      <section className="container mx-auto px-4 lg:px-8 py-20 md:py-32">
+      <section className="container mx-auto px-4 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-24">
         <div className="max-w-4xl mx-auto space-y-12">
           <div className="space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold text-white">
@@ -69,7 +69,7 @@ const About = () => {
           <div className="pt-8">
             <Link
               to="/blog"
-              className="group inline-flex items-center px-8 py-4 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#FF3366] transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#FF3366]/50"
+              className="group inline-flex items-center px-8 py-4 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#1a4d57] transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#1a4d57]/50"
             >
               <Sparkles size={20} className="mr-2" />
               Kallensight

@@ -95,7 +95,7 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-black">
-      <article className="container mx-auto px-4 lg:px-8 py-20 md:py-32">
+      <article className="container mx-auto px-4 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-24">
         <div className="max-w-4xl mx-auto">
           <Link
             to="/blog"
@@ -134,8 +134,8 @@ const BlogPost = () => {
                   disabled={liked}
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${
                     liked
-                      ? "border-[#FF3366]/50 bg-[#FF3366]/10 text-[#FF3366] cursor-not-allowed"
-                      : "border-gray-800 bg-gray-900/40 hover:border-[#FF3366]/60 hover:text-[#FF3366]"
+                      ? "border-[#1a4d57]/50 bg-[#1a4d57]/10 text-[#1a4d57] cursor-not-allowed"
+                      : "border-gray-800 bg-gray-900/40 hover:border-[#1a4d57]/60 hover:text-[#1a4d57]"
                   }`}
                   aria-label="Like this post"
                 >

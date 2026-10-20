@@ -51,4 +51,22 @@ export const certificates: Certificate[] = [
     issuer: "Ajira Digital Program",
     issued_date: "2025-01-20",
   },
+
+  {
+    id: "mern-stack-certification",
+    title: "MERN Stack Certification",
+    image_url:
+      "https://res.cloudinary.com/drfdoiwg1/image/upload/v1792509230/cer1_tmtwnn.png",
+    issuer: "Professional Development",
+    issued_date: "2025-09-10",
+  },
+
+  {
+    id: "software-testing-certification",
+    title: "Software Testing Certification",
+    image_url:
+      "https://res.cloudinary.com/drfdoiwg1/image/upload/v1792509230/cer1_tmtwnn.png",
+    issuer: "Professional Development",
+    issued_date: "2025-09-10",
+  },
 ];

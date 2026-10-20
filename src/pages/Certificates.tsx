@@ -48,7 +48,7 @@ const Certificates = () => {
 
   return (
     <div className="min-h-screen bg-black">
-      <section className="container mx-auto px-4 lg:px-8 py-20 md:py-32">
+      <section className="container mx-auto px-4 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-24">
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="space-y-4 text-center">
             <div className="flex items-center justify-center gap-3 mb-4">

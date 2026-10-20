@@ -46,7 +46,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-black">
-      <section className="container mx-auto px-4 lg:px-8 py-20 md:py-32">
+      <section className="container mx-auto px-4 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-24">
         <div className="max-w-6xl mx-auto space-y-12">
           {/* Header */}
           <div className="space-y-4 text-center">
@@ -106,7 +106,7 @@ const Blog = () => {
                       </div>
 
                       <div className="flex items-center gap-2 text-gray-400 text-sm bg-gray-900/40 px-3 py-1 rounded-full border border-gray-800">
-                        <Heart size={14} className="text-[#FF3366]" />
+                        <Heart size={14} className="text-[#1a4d57]" />
                         {getLikesForSlug(post.slug)}
                       </div>
                     </div>

@@ -103,7 +103,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-black">
-      <section className="container mx-auto px-4 lg:px-8 py-20 md:py-32">
+      <section className="container mx-auto px-4 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-24">
         <div className="max-w-5xl mx-auto space-y-12">
           <div className="space-y-4 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white">
@@ -141,10 +141,10 @@ const Contact = () => {
 
                   <a
                     href="tel:+254740690760"
-                    className="group flex items-center gap-4 p-4 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800 hover:border-[#FF3366] transition-all duration-300 hover:shadow-lg hover:shadow-[#FF3366]/20"
+                    className="group flex items-center gap-4 p-4 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800 hover:border-[#1a4d57] transition-all duration-300 hover:shadow-lg hover:shadow-[#1a4d57]/20"
                   >
-                    <div className="w-12 h-12 bg-[#FF3366]/10 rounded-lg flex items-center justify-center group-hover:bg-[#FF3366]/20 transition-colors">
-                      <Phone size={24} className="text-[#FF3366]" />
+                    <div className="w-12 h-12 bg-[#1a4d57]/10 rounded-lg flex items-center justify-center group-hover:bg-[#1a4d57]/20 transition-colors">
+                      <Phone size={24} className="text-[#1a4d57]" />
                     </div>
                     <div>
                       <p className="text-gray-400 text-sm">Phone</p>
@@ -165,7 +165,7 @@ const Contact = () => {
                 <a
                   href="/KALLEN MUGAMBI CV.pdf"
                   download
-                  className="inline-flex items-center px-6 py-3 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#FF3366] hover:text-white transition-colors"
+                  className="inline-flex items-center px-6 py-3 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#1a4d57] hover:text-white transition-colors"
                 >
                   <Download size={20} className="mr-2" />
                   Download CV
@@ -179,9 +179,9 @@ const Contact = () => {
               </h2>
 
               {submitted ? (
-                <div className="relative overflow-hidden rounded-2xl border border-[#00F0FF]/30 bg-gradient-to-br from-[#00F0FF]/12 via-[#0a0a0a] to-[#FF3366]/12 p-8 text-center shadow-[0_0_40px_rgba(0,240,255,0.08)]">
+                <div className="relative overflow-hidden rounded-2xl border border-[#00F0FF]/30 bg-gradient-to-br from-[#00F0FF]/12 via-[#0a0a0a] to-[#1a4d57]/12 p-8 text-center shadow-[0_0_40px_rgba(0,240,255,0.08)]">
                   <div className="absolute -top-10 -right-10 h-28 w-28 rounded-full bg-[#00F0FF]/10 blur-3xl" />
-                  <div className="absolute -bottom-10 -left-10 h-28 w-28 rounded-full bg-[#FF3366]/10 blur-3xl" />
+                  <div className="absolute -bottom-10 -left-10 h-28 w-28 rounded-full bg-[#1a4d57]/10 blur-3xl" />
 
                   <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-green-400/30 bg-green-500/10">
                     <CheckCircle2 size={34} className="text-green-400" />
@@ -359,7 +359,7 @@ const Contact = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#FF3366] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#FF3366]/50 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#1a4d57] hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#1a4d57]/50 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     <Send size={20} />
                     {loading ? 'Sending...' : 'Send Message'}

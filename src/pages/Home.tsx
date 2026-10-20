@@ -1,10 +1,41 @@
 import { Link } from 'react-router-dom';
 import { Download, ArrowRight } from 'lucide-react';
+import webDevelopmentImage from '../Assets/Wed develpment.png';
+import graphicDesignImage from '../Assets/graphic design.png';
+import uiUxImage from '../Assets/ui ux.png';
+import socialMediaMarketingImage from '../Assets/social media marketing.png';
+
+const services = [
+  {
+    title: 'Software Development',
+    image: webDevelopmentImage,
+    description:
+      'I build responsive, high-performing websites and web apps that are clean, scalable, and tailored to business goals.',
+  },
+  {
+    title: 'Graphic Design',
+    image: graphicDesignImage,
+    description:
+      'I create polished visuals, branding assets, and marketing materials that make businesses stand out with clarity and impact.',
+  },
+  {
+    title: 'UI/UX Design',
+    image: uiUxImage,
+    description:
+      'I design intuitive digital experiences focused on usability, accessibility, and seamless interactions that delight users.',
+  },
+  {
+    title: 'Social Media Marketing',
+    image: socialMediaMarketingImage,
+    description:
+      'I turn content and brand strategy into engaging campaigns that grow reach, strengthen visibility, and connect with the right audience.',
+  },
+];
 
 const Home = () => {
   return (
     <div className="min-h-screen bg-black">
-      <section className="container mx-auto px-4 lg:px-8 py-20 md:py-32">
+      <section className="container mx-auto px-4 lg:px-8 pt-12 pb-16 md:pt-16 md:pb-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 order-2 lg:order-1">
             <div className="space-y-4">
@@ -24,7 +55,7 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 to="/work"
-                className="group inline-flex items-center justify-center px-8 py-4 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#FF3366] transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#FF3366]/50"
+                className="group inline-flex items-center justify-center px-8 py-4 bg-[#00F0FF] text-black font-semibold rounded-lg hover:bg-[#ffffff] transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#1a4d57]/50"
               >
                 See My Work
                 <ArrowRight
@@ -60,39 +91,33 @@ const Home = () => {
       </section>
 
       <section className="container mx-auto px-4 lg:px-8 py-16 border-t border-gray-800">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="group p-8 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800 hover:border-[#00F0FF] transition-all duration-300 hover:shadow-lg hover:shadow-[#00F0FF]/20">
-            <div className="w-12 h-12 bg-[#00F0FF]/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#00F0FF]/20 transition-colors">
-              <span className="text-2xl">💻</span>
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Software Development</h3>
-            <p className="text-gray-400">
-              Building scalable web applications with modern technologies and best
-              practices.
-            </p>
-          </div>
+        <div className="mb-10 max-w-2xl">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#00F0FF]">
+            What I Do
+          </p>
+          
+        </div>
 
-          <div className="group p-8 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800 hover:border-[#FF3366] transition-all duration-300 hover:shadow-lg hover:shadow-[#FF3366]/20">
-            <div className="w-12 h-12 bg-[#FF3366]/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#FF3366]/20 transition-colors">
-              <span className="text-2xl">🎨</span>
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Graphic Design</h3>
-            <p className="text-gray-400">
-              Creating visually stunning designs that communicate your brand's
-              message effectively.
-            </p>
-          </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-4">
+          {services.map((service) => (
+            <article
+              key={service.title}
+              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-[#111827] via-[#0b0f19] to-black p-6 shadow-[0_18px_40px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_24px_50px_rgba(0,0,0,0.45)]"
+            >
+              <div className="mb-6 flex justify-center">
+                <img
+                  src={service.image}
+                  alt={service.title}
+                  className="h-28 w-28 object-contain drop-shadow-[0_0_18px_rgba(0,240,255,0.18)] sm:h-32 sm:w-32"
+                />
+              </div>
 
-          <div className="group p-8 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800 hover:border-[#00F0FF] transition-all duration-300 hover:shadow-lg hover:shadow-[#00F0FF]/20">
-            <div className="w-12 h-12 bg-[#00F0FF]/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#00F0FF]/20 transition-colors">
-              <span className="text-2xl">✨</span>
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">UI/UX Design</h3>
-            <p className="text-gray-400">
-              Designing intuitive interfaces that prioritize user experience and
-              accessibility.
-            </p>
-          </div>
+              <div className="space-y-3 text-center">
+                <h3 className="text-xl font-bold text-white">{service.title}</h3>
+                <p className="text-sm leading-6 text-gray-300">{service.description}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </section>
     </div>
